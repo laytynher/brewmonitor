@@ -1,47 +1,47 @@
 package main
 
 import (
-    "fmt"
-    "os/exec"
-    "strings"
+	"fmt"
+	"os/exec"
+	"strings"
 )
 
 func main() {
-    // Executa o comando 'brew list' para obter a lista de pacotes instalados
-    cmd := exec.Command("brew", "list")
-    output, err := cmd.Output()
-    if err != nil {
-        fmt.Println("Erro ao executar brew list:", err)
-        return
-    }
+	// Executa o comando 'brew list' para pegar a lista de pacotes instalados
+	cmd := exec.Command("brew", "list")
+	output, err := cmd.Output()
+	if err != nil {
+		fmt.Println("Erro ao executar o comando brew list:", err)
+		return
+	}
 
-    installedPackages := strings.Split(string(output), "\n")
+	pacotesInstalados := strings.Split(string(output), "\n")
 
-    // Pacotes permitidos
-    allowedPackages := map[string]bool{
-        "go":      true,
-        "hashcat": true,
-        "john":    true,
-    }
+	// Pacotes permitidos
+	pacotesPermitidos := map[string]bool{
+		"go":      true,
+		"hashcat": true,
+		"john":    true,
+	}
 
-    // Verifica se há pacotes não permitidos
-    for _, pkg := range installedPackages {
-        if pkg != "" && !allowedPackages[pkg] {
-            fmt.Printf("Pacote não permitido detectado: %s\n", pkg)
-        }
-    }
+	// Verifica pacotes não permitidos
+	for _, pkg := range pacotesInstalados {
+		if pkg != "" && !pacotesPermitidos[pkg] {
+			fmt.Printf("Pacote não permitido encontrado: %s\n", pkg)
+		}
+	}
 
-    // Verifica se todos os pacotes permitidos estão instalados
-    for pkg := range allowedPackages {
-        found := false
-        for _, installedPkg := range installedPackages {
-            if pkg == installedPkg {
-                found = true
-                break
-            }
-        }
-        if !found {
-            fmt.Printf("Pacote permitido não encontrado: %s\n", pkg)
-        }
-    }
+	// Verifica se todos os pacotes permitidos estão instalados
+	for pkg := range pacotesPermitidos {
+		encontrado := false
+		for _, pacote := range pacotesInstalados {
+			if pkg == pacote {
+				encontrado = true
+				break
+			}
+		}
+		if !encontrado {
+			fmt.Printf("Pacote permitido ausente: %s\n", pkg)
+		}
+	}
 }
